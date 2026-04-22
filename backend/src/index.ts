@@ -12,29 +12,25 @@ const app = express();
 // Initialize Prisma
 const prisma = new PrismaClient();
 
-const httpServer = createServer(app);
-
-// Socket.io initialization (Conditional for Vercel)
+// Socket.io (Only for local development)
 let io: any = null;
 if (process.env.NODE_ENV !== 'production') {
+  const { createServer } = require('http');
+  const { Server } = require('socket.io');
+  const httpServer = createServer(app);
   io = new Server(httpServer, {
-    cors: {
-      origin: '*',
-      methods: ['GET', 'POST']
-    }
+    cors: { origin: '*', methods: ['GET', 'POST'] }
   });
 
-  if (io) {
-    io.on('connection', (socket: any) => {
-      console.log('A user connected:', socket.id);
-      socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
-      });
-    });
-  }
-}
+  io.on('connection', (socket: any) => {
+    console.log('A user connected:', socket.id);
+  });
 
-const PORT = process.env.PORT || 4000;
+  const PORT = process.env.PORT || 4000;
+  httpServer.listen(PORT, () => {
+    console.log(`Local server running on port ${PORT}`);
+  });
+}
 
 app.use(cors());
 app.use(express.json());
@@ -58,15 +54,8 @@ app.use('/api/achievements', achievementsRoutes);
 app.use('/api/news', newsRoutes);
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date() });
+  res.json({ status: 'ok', timestamp: new Date(), env: process.env.NODE_ENV });
 });
 
-// Only listen if not on Vercel
-if (process.env.NODE_ENV !== 'production') {
-  httpServer.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
-}
-
 export default app;
-export { app, io, prisma };
+export { app, prisma };
