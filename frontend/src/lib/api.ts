@@ -1,6 +1,6 @@
 import { useAuthStore } from '../store/useAuthStore';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'https://stock-trainer-v2.vercel.app/api';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
 export const fetchWithAuth = async (endpoint: string, options: RequestInit = {}) => {
   const { token, logout } = useAuthStore.getState();
