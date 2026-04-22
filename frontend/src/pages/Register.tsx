@@ -5,6 +5,8 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Card } from '../components/ui/Card';
 
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+
 export const Register = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
@@ -20,7 +22,7 @@ export const Register = () => {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:4000/api/auth/register', {
+      const res = await fetch(`${BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, username, password })
