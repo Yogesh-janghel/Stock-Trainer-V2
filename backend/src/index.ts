@@ -8,15 +8,32 @@ import { PrismaClient } from '@prisma/client';
 dotenv.config();
 
 const app = express();
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  }
-});
 
+// Initialize Prisma
 const prisma = new PrismaClient();
+
+const httpServer = createServer(app);
+
+// Socket.io initialization (Conditional for Vercel)
+let io: any = null;
+if (process.env.NODE_ENV !== 'production') {
+  io = new Server(httpServer, {
+    cors: {
+      origin: '*',
+      methods: ['GET', 'POST']
+    }
+  });
+
+  if (io) {
+    io.on('connection', (socket: any) => {
+      console.log('A user connected:', socket.id);
+      socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+      });
+    });
+  }
+}
+
 const PORT = process.env.PORT || 4000;
 
 app.use(cors());
@@ -44,16 +61,12 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date() });
 });
 
-io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
-  
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+// Only listen if not on Vercel
+if (process.env.NODE_ENV !== 'production') {
+  httpServer.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
   });
-});
+}
 
-httpServer.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
+export default app;
 export { app, io, prisma };
