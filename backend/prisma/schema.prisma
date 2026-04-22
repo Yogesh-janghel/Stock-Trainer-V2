@@ -1,0 +1,91 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  username     String   @unique
+  passwordHash String
+  avatarUrl    String?
+  virtualCash  Float    @default(500000)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  portfolios   Portfolio[]
+  orders       Order[]
+  snapshots    PortfolioSnapshot[]
+  watchlists   Watchlist[]
+  achievements Achievement[]
+}
+
+model Portfolio {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  holdings  PortfolioHolding[]
+}
+
+model PortfolioHolding {
+  id           String    @id @default(uuid())
+  portfolioId  String
+  portfolio    Portfolio @relation(fields: [portfolioId], references: [id])
+  ticker       String
+  companyName  String
+  quantity     Int
+  avgBuyPrice  Float
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([portfolioId, ticker])
+}
+
+model Order {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
+  ticker           String
+  companyName      String
+  type             String   // "BUY" or "SELL"
+  quantity         Int
+  priceAtExecution Float
+  totalValue       Float
+  status           String   // "COMPLETED", "PENDING", "CANCELLED"
+  createdAt        DateTime @default(now())
+}
+
+model PortfolioSnapshot {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  totalValue  Float
+  cashBalance Float
+  recordedAt  DateTime @default(now())
+}
+
+model Watchlist {
+  id      String   @id @default(uuid())
+  userId  String
+  user    User     @relation(fields: [userId], references: [id])
+  name    String
+  stocks  WatchlistStock[]
+}
+
+model WatchlistStock {
+  id          String    @id @default(uuid())
+  watchlistId String
+  watchlist   Watchlist @relation(fields: [watchlistId], references: [id])
+  ticker      String
+}
+
+model Achievement {
+  id       String   @id @default(uuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id])
+  badgeId  String
+  earnedAt DateTime @default(now())
+}

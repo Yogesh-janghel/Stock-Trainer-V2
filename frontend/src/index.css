@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Space+Grotesk:wght@300..700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-deep-black text-off-white font-body selection:bg-acid-green selection:text-deep-black;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight lowercase;
+  }
+}
+
+@layer utilities {
+  .brutal-border {
+    @apply border-4 border-deep-black;
+  }
+  
+  .brutal-card {
+    @apply bg-off-white text-deep-black brutal-border shadow-brutal transition-all duration-300 ease-bouncy;
+  }
+  
+  .brutal-card-dark {
+    @apply bg-deep-black text-off-white brutal-border shadow-brutal transition-all duration-300 ease-bouncy;
+  }
+
+  .brutal-btn {
+    @apply bg-off-white text-deep-black brutal-border shadow-brutal font-display font-bold tracking-tight lowercase px-6 py-3 
+    hover:-translate-y-0.5 hover:-translate-x-0.5 hover:shadow-brutal-hover 
+    active:translate-y-[3px] active:translate-x-[3px] active:shadow-brutal-active
+    transition-all duration-300 ease-bouncy;
+  }
+  
+  .brutal-btn-primary {
+    @apply brutal-btn bg-acid-green;
+  }
+
+  .brutal-btn-destructive {
+    @apply brutal-btn bg-hot-pink text-off-white;
+  }
+
+  .brutal-input {
+    @apply bg-off-white text-deep-black brutal-border shadow-brutal-sm font-body px-4 py-3 outline-none
+    focus:shadow-brutal-focus transition-all duration-300 ease-bouncy placeholder:text-mid-gray;
+  }
+
+  .transition-bouncy {
+    transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(2deg); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+@keyframes wobble {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-5deg) scale(1.1); }
+  75% { transform: rotate(5deg) scale(1.1); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+.hover-wobble:hover {
+  animation: wobble 0.5s ease-in-out;
+}
