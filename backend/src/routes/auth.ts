@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import * as jwtPkg from 'jsonwebtoken';
 import { prisma } from '../index';
 import { z } from 'zod';
