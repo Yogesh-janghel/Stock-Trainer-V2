@@ -53,6 +53,10 @@ app.use('/api/watchlist', watchlistRoutes);
 app.use('/api/achievements', achievementsRoutes);
 app.use('/api/news', newsRoutes);
 
+app.get('/', (req, res) => {
+  res.json({ message: 'Stock Trainer API is running 🚀', version: '1.0.0' });
+});
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date(), env: process.env.NODE_ENV });
 });
